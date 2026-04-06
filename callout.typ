@@ -1,8 +1,6 @@
 // callout.typ
 
 // --- Color Palettes ---
-
-
 #let colors = (
   note: rgb("#0969da"),
   tip: rgb("#2e8540"),
@@ -57,7 +55,7 @@
 
 #let callout(
   type: "note",
-  style: "simple", // Options: "simple", "quarto"
+  style: "quarto", // Options: "simple", "quarto"
   title: auto,
   color: auto,
   icon: auto, // Accept custom content
@@ -110,7 +108,6 @@
       width: 100%,
       stroke: (left: 3pt + c),
       inset: 1em,
-      fill: bg,
       [
         #text(weight: "bold", fill: c)[#ic #h(0.2em) #t]
         #v(0.5em)
@@ -127,5 +124,3 @@
 #let warning(..args, body) = callout(type: "warning", ..args, body)
 #let important(..args, body) = callout(type: "important", ..args, body)
 #let caution(..args, body) = callout(type: "caution", ..args, body)
-
-
