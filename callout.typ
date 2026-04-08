@@ -137,7 +137,11 @@
   figure(
     kind: "callout-" + type,
     supplement: style,
-    caption: title,
+    caption: metadata((
+      title: title,
+      color: color,
+      icon: icon,
+    )),
     gap: 0pt,
     placement: none,
     outlined: false,
@@ -147,97 +151,150 @@
 
 #let resolve-style(supplement) = {
   if type(supplement) == str {
-    supplement
-  } else {
-    "quarto"
+    return supplement
   }
+
+  "quarto"
 }
 
-// Convenience helper for applying one style to all callout variants.
-// Use it as a show-rule transform, for example:
-// #show: callout-style.with(style: "simple")
-#let callout-style(style: "quarto", body) = [
-  #show figure.where(kind: "callout-note"): it => {
-    if (it.caption == none) {
-      render-callout(type: "note", style: style, it.body)
-    } else {
-      render-callout(type: "note", style: style, title: it.caption.body, it.body)
-    }
+#let resolve-callout-options(caption) = {
+  if caption == none {
+    return (title: none, color: auto, icon: auto)
+  }
 
+  let body = caption.body
+  if body.func() == metadata and type(body.value) == dictionary {
+    let v = body.value
+    return (
+      title: v.at("title", default: none),
+      color: v.at("color", default: auto),
+      icon: v.at("icon", default: auto),
+    )
+  }
+
+}
+
+#let callout-ref-title(kind) = {
+  if kind == "callout-note" {
+    return "Note"
+  } else if kind == "callout-tip" {
+    return "Tip"
+  } else if kind == "callout-warning" {
+    return "Warning"
+  } else if kind == "callout-important" {
+    return "Important"
+  } else if kind == "callout-caution" {
+    return "Caution"
+  }
+
+  return "Callout"
+}
+
+#let is-callout-kind(kind) = {
+  kind == "callout-note" or kind == "callout-tip" or kind == "callout-warning" or kind == "callout-important" or kind == "callout-caution"
+}
+
+#let callout-header(type, caption, kind, numbering-rule, loc) = {
+  if numbering-rule == none {
+    if caption == none {
+      return auto
+    }
+    return caption
+  }
+
+  let nums = counter(figure.where(kind: kind)).at(loc)
+  let prefix = [#resolve-title(type, auto) #numbering(numbering-rule, ..nums)]
+  if caption == none {
+    return prefix
+  }
+
+  [#prefix: #caption]
+}
+
+#let render-callout-figure(it, type, forced-style: auto) = {
+  let opts = resolve-callout-options(it.caption)
+  let style = if forced-style == auto { resolve-style(it.supplement) } else { forced-style }
+  let title = callout-header(type, opts.title, it.kind, it.numbering, it.location())
+  render-callout(type: type, style: style, title: title, color: opts.color, icon: opts.icon, it.body)
+}
+
+#show ref: it => {
+  let el = it.element
+  if el == none or el.func() != figure {
+    return it
+  }
+
+  if not is-callout-kind(el.kind) {
+    return it
+  }
+
+  let label = callout-ref-title(el.kind)
+  if el.numbering == none {
+    return link(el.location(), [#label])
+  }
+
+  let nums = counter(figure.where(kind: el.kind)).at(el.location())
+  link(el.location(), [#label #numbering(el.numbering, ..nums)])
+}
+
+// Convenience helper for applying both style and numbering to all callout variants.
+// Use it as a show-rule transform, for example:
+// #show: callout-style.with(style: "simple", numbering: "1")
+#let callout-style(style: "quarto", numbering: none, body) = [
+  #show figure.where(kind: "callout-note"): set figure(numbering: numbering)
+  #show figure.where(kind: "callout-tip"): set figure(numbering: numbering)
+  #show figure.where(kind: "callout-warning"): set figure(numbering: numbering)
+  #show figure.where(kind: "callout-important"): set figure(numbering: numbering)
+  #show figure.where(kind: "callout-caution"): set figure(numbering: numbering)
+
+  #show figure.where(kind: "callout-note"): it => {
+    render-callout-figure(it, "note", forced-style: style)
   }
   #show figure.where(kind: "callout-tip"): it => {
-    if (it.caption == none) {
-      render-callout(type: "tip", style: style, it.body)
-    } else {
-      render-callout(type: "tip", style: style, title: it.caption.body, it.body)
-    }
+    render-callout-figure(it, "tip", forced-style: style)
   }
   #show figure.where(kind: "callout-warning"): it => {
-    if (it.caption == none) {
-      render-callout(type: "warning", style: style, it.body)
-    } else {
-      render-callout(type: "warning", style: style, title: it.caption.body, it.body)
-    }
+    render-callout-figure(it, "warning", forced-style: style)
   }
   #show figure.where(kind: "callout-important"): it => {
-    if (it.caption == none) {
-      render-callout(type: "important", style: style, it.body)
-    } else {
-      render-callout(type: "important", style: style, title: it.caption.body, it.body)
-    }
+    render-callout-figure(it, "important", forced-style: style)
   }
   #show figure.where(kind: "callout-caution"): it => {
-    if (it.caption == none) {
-      render-callout(type: "caution", style: style, it.body)
-    } else {
-      render-callout(type: "caution", style: style, title: it.caption.body, it.body)
-    }
+    render-callout-figure(it, "caution", forced-style: style)
   }
 
   #body
 ]
 
+// figure numbering is enabled by default so we override that here
+#show figure.where(kind: "callout-note"): set figure(numbering: none)
+#show figure.where(kind: "callout-tip"): set figure(numbering: none)
+#show figure.where(kind: "callout-warning"): set figure(numbering: none)
+#show figure.where(kind: "callout-important"): set figure(numbering: none)
+#show figure.where(kind: "callout-caution"): set figure(numbering: none)
+
+
 // Render the marker figures into final callout blocks.
 // These are the default rendering rules when callout-style is NOT used.
 // When callout-style IS used, those rules override these at the document level.
 #show figure.where(kind: "callout-note"): it => {
-  if (it.caption == none) {
-    render-callout(type: "note", style: resolve-style(it.supplement), it.body)
-  } else {
-    render-callout(type: "note", style: resolve-style(it.supplement),title: it.caption.body, it.body)
-  }
+  render-callout-figure(it, "note")
 }
 
 #show figure.where(kind: "callout-tip"): it => {
-  if (it.caption == none) {
-    render-callout(type: "tip", style: resolve-style(it.supplement), it.body)
-  } else {
-    render-callout(type: "tip", style: resolve-style(it.supplement), title: it.caption.body, it.body)
-  }
+  render-callout-figure(it, "tip")
 }
 
 #show figure.where(kind: "callout-warning"): it => {
-  if (it.caption == none) {
-    render-callout(type: "warning", style: resolve-style(it.supplement), it.body)
-  } else {
-    render-callout(type: "warning", style: resolve-style(it.supplement), title: it.caption.body, it.body)
-  }
+  render-callout-figure(it, "warning")
 }
 
 #show figure.where(kind: "callout-important"): it => {
-  if (it.caption == none) {
-    render-callout(type: "important", style: resolve-style(it.supplement), it.body)
-  } else {
-    render-callout(type: "important", style: resolve-style(it.supplement), title: it.caption.body, it.body)
-  }
+  render-callout-figure(it, "important")
 }
 
 #show figure.where(kind: "callout-caution"): it => {
-  if (it.caption == none) {
-    render-callout(type: "caution", style: resolve-style(it.supplement), it.body)
-  } else {
-    render-callout(type: "caution", style: resolve-style(it.supplement), title: it.caption.body, it.body)
-  }
+  render-callout-figure(it, "caution")
 }
 
 // --- Shorthand Helpers ---
