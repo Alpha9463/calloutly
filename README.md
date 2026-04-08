@@ -9,7 +9,7 @@ The icons are embedded directly as svgs in the package, removing any external de
 To use the callout package, simply import it at the beginning of your Typst document:
 
 ```typst
-#import "@preview/callout-0.2.0" : callout, note, tip, important, warning, caution
+#import "@preview/calloutly-0.2.0" : callout, note, tip, important, warning, caution
 ```
 
 Then you can create callouts like this:
@@ -39,3 +39,4 @@ You can also customise the colours and icons by using the `callout` component di
 ## Planned Features
 - Additional styles (e.g. "fancy", "minimal", "Edstem")
 - Make the callout blocks referenceable with traditional Typst referencing
+- Make callouts compatible with either `#show` or `#set` rules for easy customisation of the default styles
