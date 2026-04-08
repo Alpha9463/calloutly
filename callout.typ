@@ -51,9 +51,9 @@
   return box(image(bytes(svg-string), height: 1em), baseline: 20%)
 }
 
-// --- Main Callout Function ---
+// --- Main Callout Renderer ---
 
-#let callout(
+#let render-callout(
   type: "note",
   style: "quarto", // Options: "simple", "quarto"
   title: auto,
@@ -73,6 +73,7 @@
       radius: 4pt,
 
       [
+        #set align(start)
         #text(fill: c, weight: "bold", size: 1.1em)[#ic #h(0.2em) #t]
         #v(0.5em, weak: true)
         #body
@@ -91,6 +92,7 @@
           inset: (x: 1em, y: 0.5em),
           fill: c.lighten(90%), // Tinted header background
           [
+            #set align(start)
             #text(fill: c.darken(10%), weight: "bold")[#box(baseline: 20%)[#ic] #h(0.3em) #t]
           ]
         )
@@ -98,7 +100,10 @@
           width: 100%,
           inset: (x: 1em, top: 0.6em, bottom: 1em), // Precise body padding
           above: 0pt, // Remove native paragraph/block spacing
-          body
+          [
+            #set align(start)
+            #body
+          ]
         )
       ]
     )
@@ -109,6 +114,7 @@
       stroke: (left: 3pt + c),
       inset: 1em,
       [
+        #set align(start)
         #text(weight: "bold", fill: c)[#ic #h(0.2em) #t]
         #v(0.5em)
         #body
@@ -117,8 +123,124 @@
   }
 }
 
-// --- Shorthand Helpers ---
+// --- Figure-backed Callout API ---
 
+// Emit a marker `figure` element so users can target callouts with show rules.
+#let callout(
+  type: "note",
+  style: "quarto",
+  title: none,
+  color: auto,
+  icon: auto,
+  body,
+) = {
+  figure(
+    kind: "callout-" + type,
+    supplement: style,
+    caption: title,
+    gap: 0pt,
+    placement: none,
+    outlined: false,
+    body,
+  )
+}
+
+#let resolve-style(supplement) = {
+  if type(supplement) == str {
+    supplement
+  } else {
+    "quarto"
+  }
+}
+
+// Convenience helper for applying one style to all callout variants.
+// Use it as a show-rule transform, for example:
+// #show: callout-style.with(style: "simple")
+#let callout-style(style: "quarto", body) = [
+  #show figure.where(kind: "callout-note"): it => {
+    if (it.caption == none) {
+      render-callout(type: "note", style: style, it.body)
+    } else {
+      render-callout(type: "note", style: style, title: it.caption.body, it.body)
+    }
+
+  }
+  #show figure.where(kind: "callout-tip"): it => {
+    if (it.caption == none) {
+      render-callout(type: "tip", style: style, it.body)
+    } else {
+      render-callout(type: "tip", style: style, title: it.caption.body, it.body)
+    }
+  }
+  #show figure.where(kind: "callout-warning"): it => {
+    if (it.caption == none) {
+      render-callout(type: "warning", style: style, it.body)
+    } else {
+      render-callout(type: "warning", style: style, title: it.caption.body, it.body)
+    }
+  }
+  #show figure.where(kind: "callout-important"): it => {
+    if (it.caption == none) {
+      render-callout(type: "important", style: style, it.body)
+    } else {
+      render-callout(type: "important", style: style, title: it.caption.body, it.body)
+    }
+  }
+  #show figure.where(kind: "callout-caution"): it => {
+    if (it.caption == none) {
+      render-callout(type: "caution", style: style, it.body)
+    } else {
+      render-callout(type: "caution", style: style, title: it.caption.body, it.body)
+    }
+  }
+
+  #body
+]
+
+// Render the marker figures into final callout blocks.
+// These are the default rendering rules when callout-style is NOT used.
+// When callout-style IS used, those rules override these at the document level.
+#show figure.where(kind: "callout-note"): it => {
+  if (it.caption == none) {
+    render-callout(type: "note", style: resolve-style(it.supplement), it.body)
+  } else {
+    render-callout(type: "note", style: resolve-style(it.supplement),title: it.caption.body, it.body)
+  }
+}
+
+#show figure.where(kind: "callout-tip"): it => {
+  if (it.caption == none) {
+    render-callout(type: "tip", style: resolve-style(it.supplement), it.body)
+  } else {
+    render-callout(type: "tip", style: resolve-style(it.supplement), title: it.caption.body, it.body)
+  }
+}
+
+#show figure.where(kind: "callout-warning"): it => {
+  if (it.caption == none) {
+    render-callout(type: "warning", style: resolve-style(it.supplement), it.body)
+  } else {
+    render-callout(type: "warning", style: resolve-style(it.supplement), title: it.caption.body, it.body)
+  }
+}
+
+#show figure.where(kind: "callout-important"): it => {
+  if (it.caption == none) {
+    render-callout(type: "important", style: resolve-style(it.supplement), it.body)
+  } else {
+    render-callout(type: "important", style: resolve-style(it.supplement), title: it.caption.body, it.body)
+  }
+}
+
+#show figure.where(kind: "callout-caution"): it => {
+  if (it.caption == none) {
+    render-callout(type: "caution", style: resolve-style(it.supplement), it.body)
+  } else {
+    render-callout(type: "caution", style: resolve-style(it.supplement), title: it.caption.body, it.body)
+  }
+}
+
+// --- Shorthand Helpers ---
 #let note(..args, body) = callout(type: "note", ..args, body)
 #let tip(..args, body) = callout(type: "tip", ..args, body)
 #let warning(..args, body) = callout(type: "warning", ..args, body)

@@ -5,11 +5,11 @@ This package defines a `callout` component that can be used to create styled cal
 
 The icons are embedded directly as svgs in the package, removing any external dependencies. The package also includes two styles: "simple" and "quarto", which can be easily switched by changing the `style` parameter. Shortcut macros are provided for each callout type to simplify usage.
 
-# Usage
+## Usage
 To use the callout package, simply import it at the beginning of your Typst document:
 
 ```typst
-#import "@preview/callout-0.1.0" : callout, note, tip, important, warning, caution
+#import "@preview/callout-0.2.0" : callout, note, tip, important, warning, caution
 ```
 
 Then you can create callouts like this:
@@ -28,9 +28,14 @@ To specify a custom title, you can use the `title` parameter:
 #callout(type: "note", title: "Custom Note")[This is a note callout with a custom title.]
 ```
 
+To set the style for all callouts in the document, you can use the `callout-style` with a show rule at the beginning of your document:
+```typst
+#show: callout-style.with(style: "quarto")
+```
+The shortcoming with this option is that it applies the style to all callouts in the document, and any callout that specifies a style will be ignored. This is because the show rule overrides the default rendering rules for callouts, so any callout that does not specify a style will use the style defined in the show rule, and any callout that does specify a style will be ignored because the show rule takes precedence. 
+
 You can also customise the colours and icons by using the `callout` component directly with additional parameters.
 
-# Planned Features
+## Planned Features
 - Additional styles (e.g. "fancy", "minimal", "Edstem")
 - Make the callout blocks referenceable with traditional Typst referencing
-- Make callouts compatible with either `#show` or `#set` rules for easy customisation of the default styles
