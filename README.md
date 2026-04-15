@@ -9,7 +9,7 @@ The icons are embedded directly as svgs in the package, removing any external de
 To use the callout package, simply import it at the beginning of your Typst document:
 
 ```typst
-#import "@preview/calloutly-1.0.0" : callout-style, callout, note, tip, important, warning, caution
+#import "@preview/calloutl:1.0.0" : callout-style, callout, note, tip, important, warning, caution
 ```
 
 Then you can create callouts like this:
@@ -45,7 +45,7 @@ You can also set a numbering rule in the same way, but this will also apply to a
 ```typst
 #show: callout-style.with(numbering: "1")
 ```
-When numbering is enabled, the callout headers will be automatically numbered according to the specified numbering format. For example, if you set `numbering: "1."`, the callouts will be numbered as "1. Note", "2. Tip", etc. If you set `numbering: "A."`, they will be numbered as "A. Note", "B. Tip", etc.
+When numbering is enabled, the callout headers will be automatically numbered according to the specified numbering format. For example, if you set `numbering: "1."`, the callouts will be numbered as "Note 1.", "Tip 2.", etc. If you set `numbering: "A."`, they will be numbered as "Note A.", "Tip B.", etc.
 
 Callout blocks are now also referenceable! You can give them an id and refer to them using `@` syntax, and they will be numbered according to the numbering rules specified in the callout style. Note that for the time being this only makes sense for numbered callouts. For example:
 ```typst
