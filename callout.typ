@@ -1,5 +1,4 @@
-// callout.typ
-
+#import "code-callout.typ" : *
 // --- Color Palettes ---
 #let colors = (
   note: rgb("#0969da"),
@@ -133,7 +132,7 @@
       [
         #set align(start)
         #text(fill: c, weight: "bold", size: 1.1em)[#ic #h(0.2em) #t]
-        #v(0.5em, weak: true)
+        #v(1.0em, weak: true)
         #body
       ]
     )
@@ -312,3 +311,4 @@
 #let important(..args, body) = callout(type: "important", ..args, body)
 /// Renders a caution callout to advise careful action.
 #let caution(..args, body) = callout(type: "caution", ..args, body)
+
