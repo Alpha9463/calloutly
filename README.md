@@ -34,7 +34,7 @@ You can also customise the colours and icons by using the `callout` component di
 #callout(type: "tip", color: rgb("#000000"), icon: "💡")[This is a tip callout with a custom colour and icon.]
 ```
 
-There are 3 main styles for the callout blocks: "simple", "quarto", and a default fallout style, should the style be invalid. 
+There are 3 main styles for the callout blocks: "simple", "quarto", and "Github". Should the style be not one of these 3, it will default to "simple". 
 
 ## Show Rules
 To set the style for all callouts in the document, you can use the `callout-style` with a show rule at the beginning of your document:
