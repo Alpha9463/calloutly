@@ -9,7 +9,7 @@ The icons are embedded directly as svgs in the package, removing any external de
 To use the callout package, simply import it at the beginning of your Typst document:
 
 ```typst
-#import "@preview/calloutly:1.0.0" : callout-style, callout, note, tip, important, warning, caution
+#import "@preview/calloutly:1.1.0" : callout-style, callout, note, tip, important, warning, caution, code-block-style
 ```
 
 Then you can create callouts like this:
@@ -55,6 +55,20 @@ Callout blocks are now also referenceable! You can give them an id and refer to 
 #note[This is a note callout that can be referenced.]<my-ref>
 @my-ref
 ```
+
+## Code Blocks
+You can also automatically format your raw code blocks as callout boxes with language-specific icons! 
+
+To enable this globally, apply the `code-block-style` show rule at the beginning of your document:
+```typst
+#show: code-block-style.with(style: "github", line-numbers: true)
+```
+
+Parameters available for `code-block-style`:
+- `style` (string): The visual style applied to code callouts (e.g. `"simple"`, `"quarto"`, `"github"`). Defaults to `"quarto"`.
+- `line-numbers` (boolean): Set to `true` to display line numbers. Because they are rendered in a separate layout grid, you can select and copy the code text naturally without inadvertently selecting the line numbers alongside it.
+
+When enabled, standard code blocks will be seamlessly transformed with the corresponding syntax-highlighting icon, inner shading, and border outlines matching the active style.
 
 ## Planned Features
 - Additional styles (e.g. "fancy", "minimal", "Edstem")
