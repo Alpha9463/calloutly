@@ -55,7 +55,7 @@
 
 #let render-callout(
   type: "note",
-  style: "quarto", // Options: "simple", "quarto"
+  style: "simple", // Options: "simple", "quarto", "github"
   title: auto,
   color: auto,
   icon: auto, // Accept custom content
@@ -64,22 +64,21 @@
   let c = resolve-color(style, type, color)
   let t = resolve-title(type, title)
   let ic = if icon != auto { icon } else { get-icon(type, c) }
-  
-  if style == "simple" {
+  if style == "github" {
+    // Custom/Fallback style
     block(
       width: 100%,
-      stroke: (left: 0.25em + c),
-      inset: (x: 1em, y: 0.8em), // matched spacing
-      radius: 4pt,
-
+      stroke: (left: 3pt + c),
+      inset: 1em,
       [
         #set align(start)
-        #text(fill: c, weight: "bold", size: 1.1em)[#ic #h(0.2em) #t]
-        #v(0.5em, weak: true)
+        #text(weight: "bold", fill: c)[#ic #h(0.2em) #t]
+        #v(0.5em)
         #body
       ]
     )
-  } else if style == "quarto" {
+  }
+  else if style == "quarto" {
     block(
       width: 100%,
       stroke: (left: 4pt + c, rest: 1pt + rgb("#dee2e6")), // Quarto standard border
@@ -107,28 +106,34 @@
         )
       ]
     )
-  } else {
-    // Custom/Fallback style
+  } else if style == "simple" {
     block(
       width: 100%,
-      stroke: (left: 3pt + c),
-      inset: 1em,
+      stroke: (left: 0.25em + c),
+      inset: (x: 1em, y: 0.8em), // matched spacing
+      radius: 4pt,
+
       [
         #set align(start)
-        #text(weight: "bold", fill: c)[#ic #h(0.2em) #t]
-        #v(0.5em)
+        #text(fill: c, weight: "bold", size: 1.1em)[#ic #h(0.2em) #t]
+        #v(0.5em, weak: true)
         #body
       ]
     )
   }
 }
 
-// --- Figure-backed Callout API ---
-
-// Emit a marker `figure` element so users can target callouts with show rules.
+/// Provides the base callout component for rendering stylized blocks.
+///
+/// - type (string): The category of the callout (e.g. \"note\", \"tip\", \"warning\", \"important\", \"caution\").
+/// - style (string): The visual style applied to the callout (e.g. \"simple\", \"quarto\", \"github\").
+/// - title (content, none): A custom title. If none, inherits based on type.
+/// - color (color, auto): The accent color of the callout block.
+/// - icon (content, auto): A custom icon. If auto, uses the default built-in SVG.
+/// - body (content): The main text or content of the callout.
 #let callout(
   type: "note",
-  style: "quarto",
+  style: "simple",
   title: none,
   color: auto,
   icon: auto,
@@ -218,29 +223,17 @@
   render-callout(type: type, style: style, title: title, color: opts.color, icon: opts.icon, it.body)
 }
 
-#show ref: it => {
-  let el = it.element
-  if el == none or el.func() != figure {
-    return it
-  }
 
-  if not is-callout-kind(el.kind) {
-    return it
-  }
 
-  let label = callout-ref-title(el.kind)
-  if el.numbering == none {
-    return link(el.location(), [#label])
-  }
+#let sys-numbering = numbering
 
-  let nums = counter(figure.where(kind: el.kind)).at(el.location())
-  link(el.location(), [#label #numbering(el.numbering, ..nums)])
-}
-
-// Convenience helper for applying both style and numbering to all callout variants.
-// Use it as a show-rule transform, for example:
-// #show: callout-style.with(style: "simple", numbering: "1")
-#let callout-style(style: "quarto", numbering: none, body) = [
+/// Applies styling and numbering rules to all callout variants within its scope.
+/// Wrap your document with `#show: callout-style.with(...)` to use it globally.
+///
+/// - style (string): The visual style applied to all callouts (e.g. \"simple\", \"quarto\", \"github\").
+/// - numbering (string, function, none): Numbering format to apply to callout blocks automatically.
+/// - body (content): The rest of your document.
+#let callout-style(style: "simple", numbering: none, body) = [
   #show figure.where(kind: "callout-note"): set figure(numbering: numbering)
   #show figure.where(kind: "callout-tip"): set figure(numbering: numbering)
   #show figure.where(kind: "callout-warning"): set figure(numbering: numbering)
@@ -263,6 +256,25 @@
     render-callout-figure(it, "caution", forced-style: style)
   }
 
+  #show ref: it => {
+    let el = it.element
+    if el == none or el.func() != figure {
+      return it
+    }
+
+    if not is-callout-kind(el.kind) {
+      return it
+    }
+
+    let label = callout-ref-title(el.kind)
+    if el.numbering == none {
+      return link(el.location(), [#label])
+    }
+
+    let nums = counter(figure.where(kind: el.kind)).at(el.location())
+    link(el.location(), [#label #sys-numbering(el.numbering, ..nums)])
+  }
+
   #body
 ]
 
@@ -273,33 +285,13 @@
 #show figure.where(kind: "callout-important"): set figure(numbering: none)
 #show figure.where(kind: "callout-caution"): set figure(numbering: none)
 
-
-// Render the marker figures into final callout blocks.
-// These are the default rendering rules when callout-style is NOT used.
-// When callout-style IS used, those rules override these at the document level.
-#show figure.where(kind: "callout-note"): it => {
-  render-callout-figure(it, "note")
-}
-
-#show figure.where(kind: "callout-tip"): it => {
-  render-callout-figure(it, "tip")
-}
-
-#show figure.where(kind: "callout-warning"): it => {
-  render-callout-figure(it, "warning")
-}
-
-#show figure.where(kind: "callout-important"): it => {
-  render-callout-figure(it, "important")
-}
-
-#show figure.where(kind: "callout-caution"): it => {
-  render-callout-figure(it, "caution")
-}
-
-// --- Shorthand Helpers ---
+/// Renders a generic note callout.
 #let note(..args, body) = callout(type: "note", ..args, body)
+/// Renders a helpful tip callout.
 #let tip(..args, body) = callout(type: "tip", ..args, body)
+/// Renders a warning callout to highlight potential issues.
 #let warning(..args, body) = callout(type: "warning", ..args, body)
+/// Renders an important callout for critical information.
 #let important(..args, body) = callout(type: "important", ..args, body)
+/// Renders a caution callout to advise careful action.
 #let caution(..args, body) = callout(type: "caution", ..args, body)
