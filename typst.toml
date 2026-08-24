@@ -1,7 +1,8 @@
 [package]
 name = "calloutly"
-version = "1.1.0"
+version = "1.2.0"
 entrypoint = "callout.typ"
+compiler = "0.12.0"
 authors = ["Alex Anderson"]
 license = "MIT"
 description = "Create customizable Markdown-style Callouts"

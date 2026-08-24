@@ -5,7 +5,9 @@
   tip: rgb("#2e8540"),
   important: rgb("#cc0000"), // Red for important
   warning: rgb("#d97706"), // Deeper orange for warning
-  caution: rgb("#fd7e14") // Lighter orange for caution
+  caution: rgb("#fd7e14"), // Lighter orange for caution
+  success: rgb("#3d9e28"), // Green for success
+  error: rgb("#d92b2a") // Red for error
 )
 
 // --- Icons (SVGs) ---
@@ -28,9 +30,15 @@
   caution: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
   <path d="m9.97 4.88.953 3.811C10.159 8.878 9.14 9 8 9s-2.158-.122-2.923-.309L6.03 4.88C6.635 4.957 7.3 5 8 5s1.365-.043 1.97-.12m-.245-.978L8.97.88C8.718-.13 7.282-.13 7.03.88L6.275 3.9C6.8 3.965 7.382 4 8 4s1.2-.036 1.725-.098m4.396 8.613a.5.5 0 0 1 .037.96l-6 2a.5.5 0 0 1-.316 0l-6-2a.5.5 0 0 1 .037-.96l2.391-.598.565-2.257c.862.212 1.964.339 3.165.339s2.303-.127 3.165-.339l.565 2.257z"/>
 </svg>`,
+  success: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.9 8.3 6.9 10.3 11.1 5.7"/>
+</svg>`,
+  error: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5.5 5.5 10.5 10.5M10.5 5.5 5.5 10.5"/>
+</svg>`,
 )
-
-// --- Helper Functions ---
 
 // --- GitHub Theme Data ---
 #let github-colors = (
@@ -39,6 +47,8 @@
   important: rgb("#8250df"),
   warning: rgb("#9a6700"),
   caution: rgb("#d1242f"),
+  success: rgb("#1a7f37"),
+  error: rgb("#cf222e"),
 )
 
 #let github-icons = (
@@ -47,27 +57,92 @@
   important: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>`,
   warning: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>`,
   caution: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>`,
+  success: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.9 8.3 6.9 10.3 11.1 5.7"/>
+</svg>`,
+  error: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5.5 5.5 10.5 10.5M10.5 5.5 5.5 10.5"/>
+</svg>`,
 )
+
+
+// --- edstem marks ---
+//
+// The tile is already the container, so a framed icon would be a container
+// inside a container and reads thin at that size. These are solid, unframed
+// marks with the weight of the bold glyphs used for "note" and "important".
+#let edstem-icons = (
+  tip: (size: 1.18em, svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M8 1a4.6 4.6 0 0 0-2.7 8.33c.42.3.7.7.7 1.12v.25h4v-.25c0-.42.28-.82.7-1.12A4.6 4.6 0 0 0 8 1"/>
+  <path d="M6 11.85h4v1.3H6zM6.7 14h2.6a.65.65 0 0 1 0 1.3H6.7a.65.65 0 0 1 0-1.3"/>
+</svg>`),
+  warning: (size: 1.18em, svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8.87 1.98a1 1 0 0 0-1.74 0L.36 13.72a1 1 0 0 0 .87 1.5h13.54a1 1 0 0 0 .87-1.5zM7.2 5.6h1.6l-.3 4.6H7.5zM8 13.15a1.08 1.08 0 1 1 0-2.15 1.08 1.08 0 0 1 0 2.15"/>
+</svg>`),
+  caution: (size: 1.18em, svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8.62 1.72a.66.66 0 0 0-1.24 0L4.5 11.3h7zM2.3 12.5h11.4a.65.65 0 0 1 0 1.3H2.3a.65.65 0 0 1 0-1.3M6.09 6.95h3.82l.55 1.5H5.54z"/>
+</svg>`),
+  success: (size: 1.3em, svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M2.8 8.4 6.3 11.9 13.2 4.5"/>
+</svg>`),
+  error: (size: 1.3em, svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4.2 4.2 11.8 11.8M11.8 4.2 4.2 11.8"/>
+</svg>`),
+)
+
+#import "shell.typ": shell, svg-icon
+
+// --- Helper Functions ---
+
+#let callout-types = ("note", "tip", "warning", "important", "caution", "success", "error")
 
 #let resolve-color(style, type, custom-color) = {
   if custom-color != auto { return custom-color }
-  
+
   let color-dict = if style == "github" { github-colors } else { colors }
   return color-dict.at(type, default: rgb("#4472c4"))
 }
 
+// `auto` and `none` both mean "derive the title from the type".
 #let resolve-title(type, custom-title) = {
-  if custom-title != auto { return custom-title }
+  if custom-title != auto and custom-title != none { return custom-title }
   return upper(type.slice(0, 1)) + type.slice(1)
 }
 
-#let get-icon(style, type, color) = {
+// "edstem" marks the callout with a bare glyph on the accent tile rather than a
+// framed icon: the tile is the container, so an icon that draws its own circle
+// reads thin and fussy at that size. The tile colour carries the type, which is
+// why the three attention types share an exclamation mark.
+#let edstem-glyphs = (note: "i", important: "!")
+
+#let get-edstem-icon(type) = {
+  if type in edstem-glyphs {
+    return text(fill: white, weight: "bold", size: 1.4em, baseline: 0pt, edstem-glyphs.at(type))
+  }
+  let mark = edstem-icons.at(type, default: edstem-icons.warning)
+  svg-icon(mark.svg.text, white, baseline: 0pt, size: mark.size)
+}
+
+#let get-icon(style, type, color, baseline: 0.15em) = {
   let icon-dict = if style == "github" { github-icons } else { icons }
-  let svg-string = icon-dict.at(type, default: icon-dict.note).text.replace("currentColor", color.to-hex())
-  return box(image(bytes(svg-string), height: 1em), baseline: 20%)
+  return svg-icon(icon-dict.at(type, default: icon-dict.note).text, color, baseline: baseline)
 }
 
 // --- Main Callout Renderer ---
+
+/// The style used when neither the block nor a show rule asks for one.
+#let default-style = "simple"
+
+/// Picks the style for one callout. A style set on the block itself wins, then
+/// a style set by a `callout-style` show rule, then the package default -- so a
+/// show rule sets the document's default rather than overriding every block.
+#let resolve-render-style(block-style, forced-style) = {
+  if block-style != auto { return block-style }
+  if forced-style != auto { return forced-style }
+  default-style
+}
 
 #let render-callout(
   type: "note",
@@ -75,231 +150,197 @@
   title: auto,
   color: auto,
   icon: auto, // Accept custom content
-  body
+  body,
 ) = {
   let c = resolve-color(style, type, color)
-  let t = resolve-title(type, title)
-  let ic = if icon != auto { icon } else { get-icon(style, type, c) }
-  if style == "github" {
-    // Custom/Fallback style
-    block(
-      width: 100%,
-      stroke: (left: 3pt + c),
-      inset: 1em,
-      [
-        #set align(start)
-        #text(weight: "bold", fill: c)[#ic #h(0.2em) #t]
-        #v(0.5em)
-        #body
-      ]
-    )
-  }
-  else if style == "quarto" {
-    block(
-      width: 100%,
-      stroke: (left: 4pt + c, rest: 1pt + rgb("#dee2e6")), // Quarto standard border
-      inset: 0pt,
-      radius: 4pt,
-      clip: true,
-      [
-        #block(
-          width: 100%,
-          inset: (x: 1em, y: 0.5em),
-          fill: c.lighten(90%), // Tinted header background
-          [
-            #set align(start)
-            #text(fill: c.darken(10%), weight: "bold")[#box(baseline: 20%)[#ic] #h(0.3em) #t]
-          ]
-        )
-        #block(
-          width: 100%,
-          inset: (x: 1em, top: 0.6em, bottom: 1em), // Precise body padding
-          above: 0pt, // Remove native paragraph/block spacing
-          [
-            #set align(start)
-            #body
-          ]
-        )
-      ]
-    )
-  } else if style == "simple" {
-    block(
-      width: 100%,
-      stroke: (left: 0.25em + c),
-      inset: (x: 1em, y: 0.8em), // matched spacing
-      radius: 4pt,
+  let tiled = style == "edstem"
 
-      [
-        #set align(start)
-        #text(fill: c, weight: "bold", size: 1.1em)[#ic #h(0.2em) #t]
-        #v(1.0em, weak: true)
-        #body
-      ]
-    )
+  let t = resolve-title(type, title)
+
+  let ic = if icon != auto {
+    icon
+  } else if tiled {
+    get-edstem-icon(type)
+  } else {
+    get-icon(style, type, c)
   }
+
+  let title-style = if style == "quarto" or tiled {
+    (fill: c.darken(10%), weight: "bold")
+  } else if style == "github" {
+    (fill: c, weight: "bold")
+  } else {
+    (fill: c, weight: "bold", size: 1.1em)
+  }
+
+  shell(
+    style,
+    c,
+    ic,
+    t,
+    body,
+    title-style: title-style,
+    header-fill: c.transparentize(90%), // tinted header background
+    // In "edstem" the tint covers the whole block; the other styles leave the
+    // area behind the body unfilled.
+    body-fill: if tiled { c.transparentize(90%) } else { none },
+  )
 }
 
 /// Provides the base callout component for rendering stylized blocks.
 ///
+/// The callout is wrapped in a `figure` so that it can be counted and
+/// referenced. The visible body is pre-rendered, so a callout still looks right
+/// when the document has no `callout-style` show rule; the arguments are stashed
+/// in the supplement as `metadata` so that `callout-style` can re-render it with
+/// a different style or a numbered title. Content inside `metadata` is inert --
+/// it is never laid out -- so labels and counters in the body fire exactly once.
+///
 /// - type (string): The category of the callout (e.g. \"note\", \"tip\", \"warning\", \"important\", \"caution\").
-/// - style (string): The visual style applied to the callout (e.g. \"simple\", \"quarto\", \"github\").
-/// - title (content, none): A custom title. If none, inherits based on type.
+/// - style (string, auto): The visual style for this block (e.g. \"simple\", \"quarto\", \"github\", \"edstem\"). If auto, follows any `callout-style` show rule in scope, else the package default.
+/// - title (content, auto): A custom title. If auto, inherits based on type.
 /// - color (color, auto): The accent color of the callout block.
 /// - icon (content, auto): A custom icon. If auto, uses the default built-in SVG.
 /// - body (content): The main text or content of the callout.
 #let callout(
   type: "note",
-  style: "simple",
-  title: none,
+  style: auto,
+  title: auto,
   color: auto,
   icon: auto,
   body,
 ) = {
   figure(
     kind: "callout-" + type,
-    supplement: style,
-    caption: metadata((
+    supplement: metadata((
+      style: style,
       title: title,
       color: color,
       icon: icon,
+      body: body,
     )),
-    gap: 0pt,
+    caption: none,
     placement: none,
     outlined: false,
-    body,
+    render-callout(
+      type: type,
+      style: resolve-render-style(style, auto),
+      title: title,
+      color: color,
+      icon: icon,
+      body,
+    ),
   )
 }
 
-#let resolve-style(supplement) = {
-  if type(supplement) == str {
-    return supplement
+#let resolve-callout-options(supplement) = {
+  // `body: none` marks "not one of our figures"; callers then fall back to `it.body`.
+  let fallback = (style: auto, title: auto, color: auto, icon: auto, body: none)
+  if supplement == none or type(supplement) != content { return fallback }
+  if supplement.func() != metadata or type(supplement.value) != dictionary {
+    return fallback
   }
 
-  "quarto"
+  let v = supplement.value
+  (
+    style: v.at("style", default: fallback.style),
+    title: v.at("title", default: fallback.title),
+    color: v.at("color", default: fallback.color),
+    icon: v.at("icon", default: fallback.icon),
+    body: v.at("body", default: fallback.body),
+  )
 }
 
-#let resolve-callout-options(caption) = {
-  if caption == none {
-    return (title: none, color: auto, icon: auto)
-  }
-
-  let body = caption.body
-  if body.func() == metadata and type(body.value) == dictionary {
-    let v = body.value
-    return (
-      title: v.at("title", default: none),
-      color: v.at("color", default: auto),
-      icon: v.at("icon", default: auto),
-    )
-  }
-
-}
+#let resolve-style(supplement) = resolve-callout-options(supplement).style
 
 #let callout-ref-title(kind) = {
-  if kind == "callout-note" {
-    return "Note"
-  } else if kind == "callout-tip" {
-    return "Tip"
-  } else if kind == "callout-warning" {
-    return "Warning"
-  } else if kind == "callout-important" {
-    return "Important"
-  } else if kind == "callout-caution" {
-    return "Caution"
-  }
-
+  let type = kind.slice("callout-".len())
+  if type in callout-types { return resolve-title(type, auto) }
   return "Callout"
 }
 
 #let is-callout-kind(kind) = {
-  kind == "callout-note" or kind == "callout-tip" or kind == "callout-warning" or kind == "callout-important" or kind == "callout-caution"
+  type(kind) == str and kind.starts-with("callout-") and kind.slice("callout-".len()) in callout-types
 }
 
-#let callout-header(type, caption, kind, numbering-rule, loc) = {
-  if numbering-rule == none {
-    if caption == none {
-      return auto
-    }
-    return caption
-  }
+#let callout-header(type, title, kind, numbering-rule, loc) = {
+  if numbering-rule == none { return title }
 
   let nums = counter(figure.where(kind: kind)).at(loc)
   let prefix = [#resolve-title(type, auto) #numbering(numbering-rule, ..nums)]
-  if caption == none {
-    return prefix
-  }
+  if title == auto or title == none { return prefix }
 
-  [#prefix: #caption]
+  [#prefix: #title]
 }
 
 #let render-callout-figure(it, type, forced-style: auto) = {
-  let opts = resolve-callout-options(it.caption)
-  let style = if forced-style == auto { resolve-style(it.supplement) } else { forced-style }
+  let opts = resolve-callout-options(it.supplement)
+  let style = resolve-render-style(opts.style, forced-style)
   let title = callout-header(type, opts.title, it.kind, it.numbering, it.location())
-  render-callout(type: type, style: style, title: title, color: opts.color, icon: opts.icon, it.body)
+  let body = if opts.body == none { it.body } else { opts.body }
+  render-callout(type: type, style: style, title: title, color: opts.color, icon: opts.icon, body)
 }
-
-
 
 #let sys-numbering = numbering
 
 /// Applies styling and numbering rules to all callout variants within its scope.
 /// Wrap your document with `#show: callout-style.with(...)` to use it globally.
 ///
-/// - style (string): The visual style applied to all callouts (e.g. \"simple\", \"quarto\", \"github\").
+/// - style (string, auto): The default visual style for callouts in scope. A block that sets its own `style` keeps it.
 /// - numbering (string, function, none): Numbering format to apply to callout blocks automatically.
 /// - body (content): The rest of your document.
-#let callout-style(style: "simple", numbering: none, body) = [
-  #show figure.where(kind: "callout-note"): set figure(numbering: numbering)
-  #show figure.where(kind: "callout-tip"): set figure(numbering: numbering)
-  #show figure.where(kind: "callout-warning"): set figure(numbering: numbering)
-  #show figure.where(kind: "callout-important"): set figure(numbering: numbering)
-  #show figure.where(kind: "callout-caution"): set figure(numbering: numbering)
+#let callout-style(style: auto, numbering: none, body) = {
+  // Each type gets its own show rules, wrapped from the inside out so that all
+  // five end up in scope for `body`.
+  let styled = callout-types.fold(body, (acc, t) => [
+    #show figure.where(kind: "callout-" + t): set figure(numbering: numbering)
+    #show figure.where(kind: "callout-" + t): it => {
+      render-callout-figure(it, t, forced-style: style)
+    }
+    #acc
+  ])
 
-  #show figure.where(kind: "callout-note"): it => {
-    render-callout-figure(it, "note", forced-style: style)
-  }
-  #show figure.where(kind: "callout-tip"): it => {
-    render-callout-figure(it, "tip", forced-style: style)
-  }
-  #show figure.where(kind: "callout-warning"): it => {
-    render-callout-figure(it, "warning", forced-style: style)
-  }
-  #show figure.where(kind: "callout-important"): it => {
-    render-callout-figure(it, "important", forced-style: style)
-  }
-  #show figure.where(kind: "callout-caution"): it => {
-    render-callout-figure(it, "caution", forced-style: style)
-  }
+  [
+    #show ref: it => {
+      let el = it.element
+      if el == none or el.func() != figure or not is-callout-kind(el.kind) {
+        return it
+      }
 
-  #show ref: it => {
-    let el = it.element
-    if el == none or el.func() != figure {
-      return it
+      let label = callout-ref-title(el.kind)
+      if el.numbering == none {
+        return link(el.location(), [#label])
+      }
+
+      let nums = counter(figure.where(kind: el.kind)).at(el.location())
+      link(el.location(), [#label #sys-numbering(el.numbering, ..nums)])
     }
 
-    if not is-callout-kind(el.kind) {
-      return it
-    }
+    #styled
+  ]
+}
 
-    let label = callout-ref-title(el.kind)
-    if el.numbering == none {
-      return link(el.location(), [#label])
-    }
-
-    let nums = counter(figure.where(kind: el.kind)).at(el.location())
-    link(el.location(), [#label #sys-numbering(el.numbering, ..nums)])
-  }
-
+/// Turns on callout styling and code-block styling in one show rule.
+///
+/// `#show: calloutly` is the whole setup; `.with(...)` forwards to both halves.
+/// Callouts themselves need no show rule at all -- `#note[...]` renders on its
+/// own straight after importing. Code blocks do need one, because a package
+/// cannot install a `raw` show rule into a document that imports it.
+///
+/// - style (string, auto): The default style for callouts and code blocks. A callout that sets its own `style` keeps it.
+/// - numbering (string, function, none): Numbering format for callout blocks.
+/// - line-numbers (boolean): Whether code blocks show line numbers.
+/// - body (content): The rest of your document.
+#let calloutly(style: auto, numbering: none, line-numbers: false, body) = [
+  #show: callout-style.with(style: style, numbering: numbering)
+  // Raw fences have nowhere to carry a per-block style, so code blocks always
+  // take the show rule's; `auto` there just means the package default.
+  #show: code-block-style.with(
+    style: resolve-render-style(auto, style),
+    line-numbers: line-numbers,
+  )
   #body
 ]
-
-// figure numbering is enabled by default so we override that here
-#show figure.where(kind: "callout-note"): set figure(numbering: none)
-#show figure.where(kind: "callout-tip"): set figure(numbering: none)
-#show figure.where(kind: "callout-warning"): set figure(numbering: none)
-#show figure.where(kind: "callout-important"): set figure(numbering: none)
-#show figure.where(kind: "callout-caution"): set figure(numbering: none)
 
 /// Renders a generic note callout.
 #let note(..args, body) = callout(type: "note", ..args, body)
@@ -311,4 +352,7 @@
 #let important(..args, body) = callout(type: "important", ..args, body)
 /// Renders a caution callout to advise careful action.
 #let caution(..args, body) = callout(type: "caution", ..args, body)
-
+/// Renders a success callout to confirm something worked.
+#let success(..args, body) = callout(type: "success", ..args, body)
+/// Renders an error callout to report a failure.
+#let error(..args, body) = callout(type: "error", ..args, body)

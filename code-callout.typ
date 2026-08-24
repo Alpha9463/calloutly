@@ -427,118 +427,222 @@
 </svg>`,
 )
 
-#let _get-code-icon(lang, color) = {
-  let svg-string = _code-icons.at(lang, default: _code-icons.default).text.replace("currentColor", color.to-hex())
-  return box(image(bytes(svg-string), height: 1em), baseline: 20%)
+#import "shell.typ": shell, svg-icon
+
+// --- Language handling ---
+
+// Fence languages that should reuse another entry's icon.
+#let _lang-aliases = (
+  "c++": "cpp",
+  "cxx": "cpp",
+  "cc": "cpp",
+  "c#": "cs",
+  "csharp": "cs",
+  "javascript": "js",
+  "jsx": "js",
+  "mjs": "js",
+  "cjs": "js",
+  "typescript": "ts",
+  "tsx": "ts",
+  "python3": "python",
+  "sh": "bash",
+  "shell": "bash",
+  "zsh": "bash",
+  "console": "bash",
+  "golang": "go",
+  "markdown": "md",
+  "rs": "rust",
+  "kt": "kotlin",
+  "hs": "haskell",
+  "typst": "typ",
+  "jsonc": "json",
+  "json5": "json",
+  "postgres": "sql",
+  "psql": "sql",
+)
+
+// Human-readable header labels, keyed by the fence language as written.
+#let _lang-titles = (
+  bash: "Bash",
+  c: "C",
+  "c++": "C++",
+  "c#": "C#",
+  cc: "C++",
+  cjs: "JavaScript",
+  console: "Shell",
+  cpp: "C++",
+  cs: "C#",
+  csharp: "C#",
+  css: "CSS",
+  cxx: "C++",
+  docker: "Dockerfile",
+  dockerfile: "Dockerfile",
+  go: "Go",
+  golang: "Go",
+  haskell: "Haskell",
+  hs: "Haskell",
+  html: "HTML",
+  java: "Java",
+  javascript: "JavaScript",
+  js: "JavaScript",
+  json: "JSON",
+  json5: "JSON",
+  jsonc: "JSON",
+  jsx: "JavaScript",
+  kotlin: "Kotlin",
+  kt: "Kotlin",
+  latex: "LaTeX",
+  lua: "Lua",
+  markdown: "Markdown",
+  md: "Markdown",
+  mjs: "JavaScript",
+  php: "PHP",
+  postgres: "SQL",
+  psql: "SQL",
+  py: "Python",
+  python: "Python",
+  python3: "Python",
+  r: "R",
+  rs: "Rust",
+  rust: "Rust",
+  scala: "Scala",
+  sh: "Shell",
+  shell: "Shell",
+  sql: "SQL",
+  swift: "Swift",
+  tex: "TeX",
+  toml: "TOML",
+  ts: "TypeScript",
+  tsx: "TypeScript",
+  typ: "Typst",
+  typst: "Typst",
+  yaml: "YAML",
+  yml: "YAML",
+  zsh: "Shell",
+)
+
+// Fence languages are matched case-insensitively, so ```Python and ```python
+// resolve to the same icon.
+#let _icon-key(lang) = {
+  let key = lower(lang)
+  _lang-aliases.at(key, default: key)
+}
+
+#let _lang-title(lang) = _lang-titles.at(lower(lang), default: lang)
+
+#let _get-code-icon(lang, color, baseline: 0.15em) = svg-icon(
+  _code-icons.at(_icon-key(lang), default: _code-icons.default).text,
+  color,
+  baseline: baseline,
+)
+
+// --- Palette ---
+// Refined grey palette -- layered tones for hierarchy.
+#let _code-accent = rgb("#8a929b") // left accent bar: mid-grey, not too heavy
+#let _code-palette = (
+  // Backgrounds are transparent tints of the accent rather than opaque greys,
+  // so a callout blends with whatever is behind it -- a coloured page, a
+  // highlight, an overlay -- instead of punching a light hole through it.
+  // Over white these match the previous opaque values to within 2/255.
+  bg: _code-accent.transparentize(92%), // code body: soft, warm-neutral off-white
+  header: _code-accent.transparentize(82%), // header strip: one step darker than body
+  border: rgb("#d0d7de"), // outer border: GitHub-style neutral
+  accent: _code-accent,
+  title: rgb("#3a4149"), // header text: dark slate, readable but calm
+  gutter: rgb("#9aa1a9"), // line numbers: muted
+)
+
+// --- Line numbers ---
+
+// Line numbers are decorative, so mark them as a PDF artifact where the
+// compiler supports it. Tag-aware consumers (Acrobat, assistive tech, anything
+// reading the structure tree) then leave them out when the code is copied.
+#let _decorative(body) = {
+  if sys.version >= version(0, 14, 0) { pdf.artifact(body) } else { body }
+}
+
+/// Draws a line-number gutter beside `it`, in its own grid cell.
+///
+/// The gutter cell holds a second, invisible layout of the same code: each line
+/// is preceded by its number and followed by `hide(line.body)`. Because that
+/// copy wraps at exactly the same width as the real one, every number lands on
+/// the first visual row of its own source line -- when a line soft-wraps, the
+/// continuation rows carry no number and numbering resumes on the next source
+/// line. Nothing is estimated, so this holds for any font, width or language.
+///
+/// `hide` draws nothing *and* emits no text into the PDF, so the code is not
+/// duplicated in the text layer. Keeping the numbers in their own cell means
+/// they are written to the PDF as one contiguous run before the code, so a
+/// viewer that builds its text layer in content-stream order lets you select
+/// the code on its own. See the README for which viewers those are.
+#let _with-line-numbers(it, color) = context {
+  let gutter = measure(raw(str(it.lines.len()))).width
+  let gap = 0.8em
+
+  layout(size => {
+    let numbers = {
+      show raw.line: line => {
+        // Pull the number back into the gutter, then hand the body the same
+        // width it gets in the real cell so the two wrap identically.
+        h(-gutter - gap)
+        _decorative(box(width: gutter, align(right, text(fill: color, str(line.number)))))
+        h(gap)
+        hide(line.body)
+      }
+      pad(left: gutter + gap, it)
+    }
+
+    grid(
+      columns: (gutter, 1fr),
+      column-gutter: gap,
+      // Wider than its cell; everything past the numbers is hidden, so the
+      // overflow is invisible and the row height still matches the code cell.
+      block(width: size.width, numbers),
+      it,
+    )
+  })
 }
 
 /// Applies styling to raw code blocks, wrapping them in a callout format.
 /// Wrap your document with `#show: code-block-style.with(...)` to use it globally.
 ///
 /// - style (string): The visual style applied to code callouts (e.g. "simple", "quarto", "github").
-/// - line-numbers (boolean): Whether to show line numbers in a way that allows copying code without copying the numbers.
+/// - line-numbers (boolean): Whether to show line numbers alongside the code.
 /// - body (content): The rest of your document.
 #let code-block-style(style: "simple", line-numbers: false, body) = [
   #show raw.where(block: true): it => {
+    let p = _code-palette
     let lang = if it.lang != none { it.lang } else { "default" }
-    let title = if it.lang != none { lang } else { "Code" }
-    
-    // Refined grey palette — layered tones for hierarchy
-    let code-bg     = rgb("#f6f7f9")   // code body: soft, warm-neutral off-white
-    let header-bg   = rgb("#e9ecef")   // header strip: one step darker than body
-    let border-soft = rgb("#d0d7de")   // outer border: GitHub-style neutral
-    let accent-bar  = rgb("#8a929b")   // left accent bar: mid-grey, not too heavy
-    let title-fg    = rgb("#3a4149")   // header text: dark slate, readable but calm
-    let gutter-fg   = rgb("#9aa1a9")   // line numbers: muted
-    let line-wrap-chars = 80             // estimated visible chars before soft wrap in the code pane
-    
-    let ic = _get-code-icon(lang, accent-bar)
-    let raw-lines = it.text.split("\n")
-    
-    let code-content = if line-numbers {
-      layout(size => {
-        // size.width is already the width inside the block's inset — no manual inset subtraction needed
-        
-        grid(
-          columns: (auto, 1fr),
-          column-gutter: 1em,
-          align(right)[
-            #set text(fill: gutter-fg)
-            #for (i, line) in raw-lines.enumerate() {
-              let expanded = line.replace("\t", "    ")
-              let wraps = calc.max(1, int(calc.ceil((expanded.len()) / line-wrap-chars)))
-              str(i + 1)
-              linebreak()
-              for _ in range(1, wraps) {
-                linebreak()
-              }
-            }
-          ],
-          align(start)[#it]
-        )
-      })
+    let title = if it.lang != none { _lang-title(it.lang) } else { "Code" }
+    let tiled = style == "edstem"
+    let icon = _get-code-icon(
+      lang,
+      if tiled { white } else { p.accent },
+      baseline: if tiled { 0pt } else { 0.15em },
+    )
+    let code = if line-numbers { _with-line-numbers(it, p.gutter) } else { it }
+
+    let title-style = if style == "quarto" or tiled {
+      (fill: p.title, weight: "semibold", size: 0.88em, tracking: 0.02em)
+    } else if style == "github" {
+      (fill: p.title, weight: "semibold", size: 0.9em)
     } else {
-      it
+      (fill: p.title, weight: "semibold", size: 1.0em)
     }
-    
-    if style == "github" {
-      block(
-        width: 100%,
-        stroke: (left: 3pt + accent-bar),
-        fill: code-bg,
-        inset: 1em,
-        [
-          #set align(start)
-          #text(weight: "semibold", size: 0.9em, fill: title-fg)[#ic #h(0.2em) #title]
-          #v(0.5em)
-          #code-content
-        ]
-      )
-    } else if style == "quarto" {
-      block(
-        width: 100%,
-        stroke: (left: 4pt + accent-bar, rest: 0.75pt + border-soft),
-        inset: 0pt,
-        radius: 4pt,
-        clip: true,
-        [
-          #block(
-            width: 100%,
-            inset: (x: 1em, y: 0.5em),
-            fill: header-bg,
-            stroke: (bottom: 0.5pt + border-soft),
-            [
-              #set align(start)
-              #text(fill: title-fg, weight: "semibold", size: 0.88em, tracking: 0.02em)[#box(baseline: 20%)[#ic] #h(0.3em) #title]
-            ]
-          )
-          #block(
-            width: 100%,
-            fill: code-bg,
-            inset: (x: 1em, top: 0.6em, bottom: 1em),
-            above: 0pt,
-            [
-              #set align(start)
-              #code-content
-            ]
-          )
-        ]
-      )
-    } else {
-      block(
-        width: 100%,
-        stroke: (left: 0.25em + accent-bar),
-        fill: code-bg,
-        inset: (x: 1em, y: 0.8em),
-        radius: 4pt,
-        [
-          #set align(start)
-          #text(fill: title-fg, weight: "semibold", size: 1.0em)[#ic #h(0.2em) #title]
-          #v(1.0em, weak: true)
-          #code-content
-        ]
-      )
-    }
+
+    shell(
+      style,
+      p.accent,
+      icon,
+      title,
+      code,
+      title-style: title-style,
+      header-fill: p.header,
+      header-stroke: (bottom: 0.5pt + p.border),
+      body-fill: p.bg,
+      border: p.border,
+      border-width: 0.75pt,
+    )
   }
   #body
 ]
